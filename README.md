@@ -31,3 +31,13 @@ Finally, navigate to shielding_calculations/scripts and run the desired script, 
 ```
 python plot_absorption.py
 ```
+
+## Basic usage
+Using the IdealGasBuilder (https://confluence.esss.lu.se/display/DG/IdealGasBuilder) any type of material can be created. The average atomic cross-sections from these materials can then be extracted according to:
+```
+ess_g4xsectdump_query -pneutron -lQGSP_BIC_HP_EMZ -m"IdealGas:formula=0.5*C54H60O9+0.5*Gd2O3{bymass}"
+```
+where in this example an epoxy-Gd2O3 shielding material was used. The generated cross-sections from the ESS-DG script is then used as input for the 'shielding_calculations'-scripts. 
+
+
+
