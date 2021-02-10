@@ -39,5 +39,4 @@ ess_g4xsectdump_query -pneutron -lQGSP_BIC_HP_EMZ -m"IdealGas:formula=0.5*C54H60
 ```
 where in this example an epoxy-Gd2O3 shielding material was used. The generated cross-sections from the ESS-DG script is then used as input for the 'shielding_calculations'-scripts. 
 
-
-
+The atomic densities are then calculated by hand, based on table values.
