@@ -8,9 +8,7 @@ This repository contains tools for calculating neutron absorption and scattering
 
 ## Installation
 
-Install the ESS-DG framework according to the instructions in the webpage above.
-
-Clone the repository:
+Install the ESS-DG framework according to the instructions in the webpage above. Then, clone the repository according to:
 ```
 git clone https://github.com/ess-dg/shielding_calculations.git
 ```
