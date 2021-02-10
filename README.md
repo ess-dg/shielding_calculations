@@ -12,7 +12,7 @@ Install the ESS-DG framework according to the instructions in the webpage above.
 
 Clone the repository:
 ```
-git clone https://github.com/ess-dg/mg_analysis_notebook.git
+git clone https://github.com/ess-dg/shielding_calculations.git
 ```
 
 ## Execution
