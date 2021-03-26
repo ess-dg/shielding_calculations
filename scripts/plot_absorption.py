@@ -21,6 +21,7 @@ Gd157_data = x_parse.parse('../data/Gd157.txt')
 LiF_data = x_parse.parse('../data/LiF.txt')
 LiF_99_perc_data = x_parse.parse('../data/LiF_99_perc.txt')
 B4C_data = x_parse.parse('../data/B4C.txt')
+B4C_97_perc_data = x_parse.parse('../data/B4C_97_perc.txt')
 B4C_99_perc_data = x_parse.parse('../data/B4C_99_perc.txt')
 Cd_data = x_parse.parse('../data/Cd.txt')
 Gd2O3_data = x_parse.parse('../data/Gd2O3.txt')
@@ -40,6 +41,7 @@ Gd157_array = hf.get_absorption_cross(Gd157_data)
 LiF_array = hf.get_absorption_cross(LiF_data)
 LiF_99_perc_array = hf.get_absorption_cross(LiF_99_perc_data)
 B4C_array = hf.get_absorption_cross(B4C_data)
+B4C_97_perc_array = hf.get_absorption_cross(B4C_97_perc_data)
 B4C_99_perc_array = hf.get_absorption_cross(B4C_99_perc_data)
 Cd_array = hf.get_absorption_cross(Cd_data)
 Gd2O3_array = hf.get_absorption_cross(Gd2O3_data)
@@ -52,6 +54,7 @@ test_epoxy_gd_array = hf.get_absorption_cross(test_epoxy_gd_data)
 
 # Extract atomic densities
 B4C_density = float(B4C_data['metadata']['NAtomsPerVolume [1/cm3]'])
+B4C_97_perc_density = float(B4C_97_perc_data['metadata']['NAtomsPerVolume [1/cm3]'])
 B4C_99_perc_density = float(B4C_99_perc_data['metadata']['NAtomsPerVolume [1/cm3]'])
 Cd_density = float(Cd_data['metadata']['NAtomsPerVolume [1/cm3]'])
 Gd2O3_density = float(Gd2O3_data['metadata']['NAtomsPerVolume [1/cm3]'])
@@ -68,6 +71,39 @@ epoxy_gd_medium_density = 0.5 * Gd2O3_density + 0.5 * epoxy_density_calculated
 epoxy_gd_high_density = 0.9 * Gd2O3_density + 0.1 * epoxy_density_calculated
 test_epoxy_gd_density = 0.5 * Gd2O3_density + 0.5 * test_epoxy_density_calculated
 
+# ==============================================================================
+#                        PLOT B4C (97%) HEAT MAP
+# ==============================================================================
+
+hf.set_thick_labels(12)
+thicknesses = np.linspace(0, 60, 100)
+energies = np.linspace(0.2, 200, 100) * 1e-3
+heat_map = []
+for i, energy in enumerate(energies):
+    print('%d/%d' % (i+1, len(energies)))
+    probabilities = np.empty(len(thicknesses), dtype='float')
+    for j, thickness in enumerate(thicknesses):
+        cross_idx = min(enumerate(B4C_97_perc_array[0]/Core.Units.eV), key=lambda x: abs(x[1]-energy))[0]
+        cross_section = B4C_97_perc_array[1][cross_idx]
+        prob_scatter = 1 - np.exp(-(cross_section*(1e-2)*B4C_97_perc_density*thickness*1e-4))
+        probabilities[j] = prob_scatter * 100
+    heat_map.append(probabilities)
+heat_map = np.array(heat_map)
+fig = plt.figure()
+plt.imshow(heat_map, origin='lower', cmap='jet', aspect='auto', #norm=LogNorm(),
+           extent=[thicknesses[0], thicknesses[-1], energies[0], energies[-1]])
+cbar = plt.colorbar()
+cbar.set_label('Probability (%)')
+plt.xlabel('Thickness ($\mu$m)')
+plt.ylabel('Energy (eV)')
+plt.title('B$_4$C ($^{10}$B: 0.97) - absorption probability')
+plt.scatter([26.4], [0.020], marker='x', color='black', label='CSPEC', s=[50])
+plt.scatter([53.3], [0.168], marker='+', color='black', label='T-REX', s=[60])
+#plt.plot([26.4, 26.4], [2e-4, 0.020], linestyle='-', color='black', label='CSPEC')
+#plt.plot([53.3, 53.3], [0.002, 0.168], linestyle='--', color='black', label='T-REX')
+plt.legend(title='Detector', loc=2)
+fig.savefig('../output/b4c_abs_prob_function_of_thickness_and_energy.pdf', bbox_inches='tight')
+print('Heat map is done!')
 
 # ==============================================================================
 #                               PLOT CROSS-SECTIONS
@@ -92,7 +128,7 @@ plt.title('Absorption cross-sections')
 plt.grid(True, which='major', linestyle='--', zorder=0)
 plt.grid(True, which='minor', linestyle='--', zorder=0)
 ymin, ymax = 1e-2, 1e10
-plt.fill_betweenx([ymin, ymax], 0.00001, 1, color='grey', alpha=0.2,
+plt.fill_betweenx([ymin, ymax], 0.0001, 1, color='grey', alpha=0.2,
                  label=None, zorder=0)
 plt.ylim(ymin, ymax)
 plt.legend(title='Isotopes')
@@ -110,7 +146,7 @@ plt.plot((Gd2O3_array[0]/Core.Units.eV), Gd2O3_array[1]/Core.Units.barn,
          color='black', linestyle='-.', label='Gd$_2$O$_3$')
 hf.plot_cross_area(epoxy_gd_low_array, epoxy_gd_high_array,
                 'epoxy-Gd$_2$O$_3$ (0.9-0.1 to 0.1-0.9)', 'orange', '-.')
-plt.fill_betweenx([ymin, ymax], 0.00001, 1, color='grey', alpha=0.2,
+plt.fill_betweenx([ymin, ymax], 0.0001, 1, color='grey', alpha=0.2,
                  label=None, zorder=0)
 plt.xscale('log')
 plt.yscale('log')
@@ -222,7 +258,7 @@ fig.savefig('../output/capture_probability_fixed_energy_vs_depth.pdf', bbox_inch
 # ==============================================================================
 
 # Extract cross-sections
-energy = 0.02525 # eV
+energy = 0.168 # eV
 epoxy_gd_medium_idx = min(enumerate(epoxy_gd_medium_array[0]/Core.Units.eV), key=lambda x: abs(x[1]-energy))[0]
 epoxy_gd_low_idx = min(enumerate(epoxy_gd_low_array[0]/Core.Units.eV), key=lambda x: abs(x[1]-energy))[0]
 epoxy_gd_high_idx = min(enumerate(epoxy_gd_high_array[0]/Core.Units.eV), key=lambda x: abs(x[1]-energy))[0]
@@ -246,7 +282,7 @@ plt.plot(thicknesses*10000, 100*(1 - np.exp(-(Gd2O3_cross*(1e-2)*Gd2O3_density*t
          color='orange', linestyle='-.', label='Gd$_2$O$_3$')
 plt.plot(thicknesses*10000, 100*(1 - np.exp(-(test_epoxy_gd_cross*(1e-2)*test_epoxy_gd_density*thicknesses))),
          color='purple', linestyle=(0, (3, 5, 1, 5)), label='test_epoxy-Gd$_2$O$_3$, 0.5-0.5 (w/w)')
-plt.title('Absorption probability @ 1.8 Å (25.25 meV)')
+plt.title('Absorption probability @ 168 meV)')
 plt.xlabel('Thickness ($\mu$m)')
 plt.ylabel('Absorption probability (%)')
 plt.xscale('log')
@@ -333,14 +369,15 @@ fig.savefig('../output/absorption_probability_comparison.pdf', bbox_inches='tigh
 capture_probability = 0.99
 energy_start = 1e-5
 energy_stop = 1
+colors = ['blue', 'red', 'green', 'black', 'orange']
 fig = plt.figure()
 for array_vec, density_vec, color, linestyle, label, is_area in zip(arrays, densities, colors, linestyles, labels, is_area_vec):
     if is_area:
         array_1, array_2 = array_vec
         density_1, density_2 = density_vec
         hf.plot_thick_vs_energy_area(array_1, array_2, label, color, linestyle,
-                                  density_1, density_2, energy_start, energy_stop,
-                                  capture_probability)
+                                     density_1, density_2, energy_start, energy_stop,
+                                     capture_probability)
     else:
         array = array_vec
         density = density_vec
@@ -359,7 +396,7 @@ plt.ylabel('Thickness (mm)')
 plt.xscale('log')
 plt.yscale('log')
 plt.legend(title='Materials')
-plt.xlim(0.00001, 1)
+plt.xlim(0.0001, 1)
 plt.ylim(1e-3, 1e5)
 plt.grid(True, which='major', linestyle='--', zorder=0)
 plt.grid(True, which='minor', linestyle='--', zorder=0)

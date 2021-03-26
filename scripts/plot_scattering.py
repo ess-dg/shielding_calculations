@@ -82,7 +82,7 @@ plt.grid(True, which='major', linestyle='--', zorder=0)
 plt.grid(True, which='minor', linestyle='--', zorder=0)
 ymin, ymax = 1e-2, 1e10
 
-plt.fill_betweenx([ymin, ymax], 0.00001, 1, color='grey', alpha=0.2,
+plt.fill_betweenx([ymin, ymax], 0.0001, 1, color='grey', alpha=0.2,
                  label=None, zorder=0)
 
 plt.ylim(ymin, ymax)
@@ -106,7 +106,7 @@ plt.plot((Gd2O3_array[0]/Core.Units.eV), Gd2O3_array[1]/Core.Units.barn,
 hf.plot_cross_area(epoxy_gd_low_array, epoxy_gd_high_array,
                 'epoxy-Gd$_2$O$_3$ (0.9-0.1 to 0.1-0.9)', 'orange', '-.')
 
-plt.fill_betweenx([ymin, ymax], 0.00001, 1, color='grey', alpha=0.2,
+plt.fill_betweenx([ymin, ymax], 0.0001, 1, color='grey', alpha=0.2,
                  label=None, zorder=0)
 
 plt.xscale('log')
@@ -159,7 +159,7 @@ plt.ylabel('Scattering probability')
 plt.grid(True, which='major', linestyle='--', zorder=0)
 plt.grid(True, which='minor', linestyle='--', zorder=0)
 plt.legend(title='Materials')
-plt.xlim(1e-5, 1)
+plt.xlim(1e-4, 1)
 plt.xscale('log')
 plt.yscale('log')
 plt.ylim(1e-3, 1)

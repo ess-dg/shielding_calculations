@@ -119,12 +119,44 @@ for wavelength in wavelengths:
     idx_abs = (np.abs(wavelengths_abs - wavelength)).argmin()
     idx_scatter = (np.abs(wavelengths_scatter - wavelength)).argmin()
     attenuation.append(probs_scatter[idx_scatter] * 0.5 + probs_abs[idx_abs])
-    print('Probability: %f' % (probs_scatter[idx_scatter] * 0.5 + probs_abs[idx_abs]))
+    #print('Probability: %f' % (probs_scatter[idx_scatter] * 0.5 + probs_abs[idx_abs]))
 attentuation = np.array(attenuation)
-
-
-
 np.savetxt('../output/window_attenuation_vs_wavelength.txt',
            np.transpose(np.array([wavelengths, attenuation])),
            delimiter=",",
            header='Wavelength (Å), Attenuation (fraction)')
+
+
+
+# ==============================================================================
+#                                PLOT HEATMAP
+# ==============================================================================
+
+hf.set_thick_labels(12)
+thicknesses = np.linspace(0, 15, 100)
+energies = np.linspace(0.2, 200, 100) * 1e-3
+heat_map = []
+for i, energy in enumerate(energies):
+    print('%d/%d' % (i+1, len(energies)))
+    probabilities = np.empty(len(thicknesses), dtype='float')
+    for j, thickness in enumerate(thicknesses):
+        cross_idx = min(enumerate(Al_array_scattering[0]/Core.Units.eV), key=lambda x: abs(x[1]-energy))[0]
+        cross_section = Al_array_scattering[1][cross_idx]
+        prob_scatter = 1 - np.exp(-(cross_section*(1e-2)*Al_density*thickness*1e-1))
+        probabilities[j] = prob_scatter * 100
+    heat_map.append(probabilities)
+heat_map = np.array(heat_map)
+fig = plt.figure()
+plt.imshow(heat_map, origin='lower', cmap='jet', aspect='auto',
+           extent=[thicknesses[0], thicknesses[-1], energies[0], energies[-1]])
+cbar = plt.colorbar()
+cbar.set_label('Probability (%)')
+plt.xlabel('Thickness (mm)')
+plt.ylabel('Energy (eV)')
+plt.title('Aluminum - scattering probability')
+plt.scatter([8.5], [0.020], marker='x', color='black', label='CSPEC', s=[50])
+plt.scatter([10.5], [0.168], marker='+', color='black', label='T-REX', s=[60])
+#plt.plot([8.5, 8.5], [2e-4, 0.020], linestyle='-', color='black', label='CSPEC')
+#plt.plot([10.5, 10.5], [0.002, 0.168], linestyle='--', color='black', label='T-REX')
+plt.legend(title='Detector', loc=2)
+fig.savefig('../output/al_scatter_function_of_thickness_and_energy.pdf', bbox_inches='tight')
