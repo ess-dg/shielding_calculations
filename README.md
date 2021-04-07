@@ -8,7 +8,7 @@ This repository contains tools for calculating neutron absorption and scattering
 
 ## Installation
 
-Install the ESS-DG framework according to the instructions in the webpage above.
+Install the ESS-DG framework according to the instructions on the webpage above.
 
 Then, clone the repository according to:
 ```
