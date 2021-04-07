@@ -1,6 +1,6 @@
 # Shielding calculations
 
-This repository contains tools for calculating neutron absorption and scattering in different shielding materials. It shows how the shielding performance depends on shielding thickness, incident neutron energy, and material composistion, such as B-10 content in B4C and component ratio in epoxy-Gd2O3. In addition, it contains calculations for figure-of-merit to decide appropriate shielding parameters for shielding in different regions in the detector, i.e. side-, back- and interal-shielding.
+This repository contains tools for calculating neutron absorption and scattering in different shielding materials. It shows how the shielding performance depends on shielding thickness, incident neutron energy, and material composistion, such as B-10 content in B4C and component ratio in epoxy-Gd2O3. In addition, it contains calculations for figure-of-merit to decide appropriate shielding parameters for shielding in different regions in the detector, i.e. side, back and interal shielding.
 
 ## Requisties
 - Python3 (https://www.python.org/downloads/)
