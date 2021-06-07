@@ -69,13 +69,23 @@ def get_number_density(density_g_per_cm3, molar_mass_g_per_mol, atoms_per_molecu
     number_density_per_cm3 = (density_g_per_cm3/molar_mass_g_per_mol) * Core.Constants.Avogadro * atoms_per_molecule
     return number_density_per_cm3
 
-def plot_cross_area(array_1, array_2, label, color, linestyle):
-    plt.plot((array_1[0]/Core.Units.eV), array_1[1]/Core.Units.barn,
-             color=color, linestyle=linestyle, label=None)
-    plt.plot((array_2[0]/Core.Units.eV), array_2[1]/Core.Units.barn,
-             color=color, linestyle=linestyle, label=None)
-    plt.fill_between(array_1[0]/Core.Units.eV, array_2[1]/Core.Units.barn,
-                     array_1[1]/Core.Units.barn, color=color, label=label, alpha=0.3)
+def plot_cross_area(array_1, array_2, label, color, linestyle, ax=None):
+    if ax is None:
+        plt.plot((array_1[0]/Core.Units.eV), array_1[1]/Core.Units.barn,
+                 color=color, linestyle=linestyle, label=None)
+        plt.plot((array_2[0]/Core.Units.eV), array_2[1]/Core.Units.barn,
+                 color=color, linestyle=linestyle, label=None)
+        plt.fill_between(array_1[0]/Core.Units.eV, array_2[1]/Core.Units.barn,
+                         array_1[1]/Core.Units.barn, color=color, label=label,
+                         alpha=0.3)
+    else:
+        ax.plot((array_1[0]/Core.Units.eV), array_1[1]/Core.Units.barn,
+                color=color, linestyle=linestyle, label=None)
+        ax.plot((array_2[0]/Core.Units.eV), array_2[1]/Core.Units.barn,
+                color=color, linestyle=linestyle, label=None)
+        ax.fill_between(array_1[0]/Core.Units.eV, array_2[1]/Core.Units.barn,
+                        array_1[1]/Core.Units.barn, color=color, label=label,
+                        alpha=0.3)
 
 def plot_prob_area(array_1, array_2, label, color, linestyle, d_1, d_2, thickness):
     prob_1 = 1 - np.exp(-(array_1[1]*(1e-2)*d_1*thickness))
